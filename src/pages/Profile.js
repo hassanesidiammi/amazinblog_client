@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/profile") // Remplacez par l'URL correcte
-      .then((response) => response.json())
-      .then((data) => {
-        setProfile(data);
-        setLoading(false);
-      })
-      .catch((error) =>
-        console.error("Erreur lors du chargement du profil :", error)
-      );
+    setProfile({
+      id: 1,
+      name: "Hassane",
+      email: "test@test.com",
+      roles: ["ROLE_EDITOR"],
+    });
+    setLoading(false);
   }, []);
 
   if (loading) {
