@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
 import { Link } from "react-router-dom";
+import { fetchWithAuth } from "../services/AuthInterceptor";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -12,7 +13,7 @@ const Posts = () => {
   const fetchPosts = async (currentPage) => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/posts?page=${currentPage}`);
+      const response = await fetchWithAuth(`${API_BASE_URL}/posts?page=${currentPage}`);
       if (!response.ok) {
         throw new Error(`HTTP error! (${response.status})`);
       }

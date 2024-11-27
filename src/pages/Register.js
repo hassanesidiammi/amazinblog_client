@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { RGISTER_BASE_URL } from "../config";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -38,6 +40,8 @@ const Register = () => {
         setMessage("Inscription réussie !");
         setError(null);
         setFormData({ name: "", email: "", password: "" });
+        localStorage.setItem("jwt", data.token);
+        navigate("/profile");
       })
       .catch((err) => {
         setError(err.message || "Erreur inconnue");

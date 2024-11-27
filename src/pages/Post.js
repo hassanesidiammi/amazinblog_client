@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API_BASE_URL } from "../config";
+import { fetchWithAuth } from "../services/AuthInterceptor";
 
 const Post = (props) => {
-  const { id } = useParams(); // Récupérer l'ID de l'article via les paramètres d'URL
+  const { id } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,7 +17,7 @@ const Post = (props) => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/posts/${id}`);
+        const response = await fetchWithAuth(`${API_BASE_URL}/posts/${id}`);
         if (!response.ok) {
           throw new Error(`Erreur HTTP! (${response.status})`);
         }
@@ -52,7 +53,7 @@ const Post = (props) => {
   const handleSaveChanges = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`${API_BASE_URL}/posts/${id}`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/posts/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

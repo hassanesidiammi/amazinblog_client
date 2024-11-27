@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
+import { fetchWithAuth } from "../services/AuthInterceptor";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -17,7 +18,7 @@ const CreatePost = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/posts`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/posts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
