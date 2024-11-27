@@ -4,16 +4,78 @@ import { API_BASE_URL } from "../config";
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState(null);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [roles, setRoles] = useState([]);
+
+  const availableRoles = ["ROLE_USER", "ROLE_EDITOR"];
 
   useEffect(() => {
-    setProfile({
-      id: 1,
-      name: "Hassane",
-      email: "test@test.com",
-      roles: ["ROLE_EDITOR"],
-    });
-    setLoading(false);
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/profile`);
+        if (!response.ok) {
+          throw new Error("Erreur lors de la récupération du profil.");
+        }
+        const data = await response.json();
+        setProfile(data);
+        setName(data.name);
+        setEmail(data.email);
+        setRoles(data.roles || []);
+        setLoading(false);
+      } catch (error) {
+        setError("Impossible de charger le profil.");
+        console.error("Erreur:", error);
+      }
+    };
+    fetchProfile();
   }, []);
+
+  const handleRoleChange = (role) => {
+    setRoles(
+      (prevRoles) =>
+        prevRoles.includes(role)
+          ? prevRoles.filter((r) => r !== role) // Retirer le rôle s'il est déjà sélectionné
+          : [...prevRoles, role] // Ajouter le rôle s'il n'est pas encore sélectionné
+    );
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!name || !email) {
+      setError("Le nom et l'email sont obligatoires");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          roles: roles,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la mise à jour du profil.");
+      }
+
+      const updatedProfile = await response.json();
+      setProfile(updatedProfile);
+      setIsEditing(false); // Arrêter l'édition
+    } catch (error) {
+      setError("Impossible de modifier le profil.");
+      console.error("Erreur:", error);
+    }
+  };
 
   if (loading) {
     return <div>Chargement...</div>;
@@ -22,14 +84,85 @@ const Profile = () => {
   return (
     <div className="container mt-5">
       <h1>Profil</h1>
-      <p>
-        <strong>Nom : </strong>
-        {profile.name}
-      </p>
-      <p>
-        <strong>Email : </strong>
-        {profile.email}
-      </p>
+      {error && <div className="alert alert-danger">{error}</div>}
+      {!isEditing ? (
+        <>
+          <p>
+            <strong>Nom : </strong>
+            {profile.name}
+          </p>
+          <p>
+            <strong>Email : </strong>
+            {profile.email}
+          </p>
+          <p>
+            <strong>Rôles : </strong>
+            {profile.roles.join(", ")}
+          </p>
+          <button
+            className="btn btn-primary"
+            onClick={() => setIsEditing(true)}
+          >
+            Modifier
+          </button>
+        </>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label">
+              Nom
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">
+              Email
+            </label>
+            <input
+              type="email"
+              className="form-control"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Rôles</label>
+            {availableRoles.map((role) => (
+              <div key={role} className="form-check">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id={`role-${role}`}
+                  checked={roles.includes(role)}
+                  onChange={() => handleRoleChange(role)}
+                />
+                <label htmlFor={`role-${role}`} className="form-check-label">
+                  {role}
+                </label>
+              </div>
+            ))}
+          </div>
+          <button type="submit" className="btn btn-primary">
+            Sauvegarder
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary ms-2"
+            onClick={() => setIsEditing(false)}
+          >
+            Annuler
+          </button>
+        </form>
+      )}
     </div>
   );
 };
