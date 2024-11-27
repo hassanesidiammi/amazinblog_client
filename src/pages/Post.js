@@ -123,7 +123,7 @@ const Post = (props) => {
               <h3>{post.title}</h3>
               <p>{post.content}</p>
               <p>
-                <strong>Auteur:</strong> {post.owner?.name || "Inconnu"}
+                <strong>Auteur:</strong> {post.author?.name || "Inconnu"}
               </p>
               <button className="btn btn-warning" onClick={handleEditToggle}>
                 Modifier

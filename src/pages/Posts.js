@@ -48,41 +48,45 @@ const Posts = () => {
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     return (
-      <nav>
-        <ul className="pagination">
-          <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
-            <button
-              className="page-link"
-              onClick={() => handlePageClick(page - 1)}
-              disabled={page === 1}
-            >
-              Previous
-            </button>
-          </li>
-          {pageNumbers.map((num) => (
+      pageNumbers.length > 1 && (
+        <nav>
+          <ul className="pagination">
+            <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+              <button
+                className="page-link"
+                onClick={() => handlePageClick(page - 1)}
+                disabled={page === 1}
+              >
+                Previous
+              </button>
+            </li>
+            {pageNumbers.map((num) => (
+              <li
+                key={num}
+                className={`page-item ${page === num ? "active" : ""}`}
+              >
+                <button
+                  className="page-link"
+                  onClick={() => handlePageClick(num)}
+                >
+                  {num}
+                </button>
+              </li>
+            ))}
             <li
-              key={num}
-              className={`page-item ${page === num ? "active" : ""}`}
+              className={`page-item ${page === totalPages ? "disabled" : ""}`}
             >
               <button
                 className="page-link"
-                onClick={() => handlePageClick(num)}
+                onClick={() => handlePageClick(page + 1)}
+                disabled={page === totalPages}
               >
-                {num}
+                Next
               </button>
             </li>
-          ))}
-          <li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
-            <button
-              className="page-link"
-              onClick={() => handlePageClick(page + 1)}
-              disabled={page === totalPages}
-            >
-              Next
-            </button>
-          </li>
-        </ul>
-      </nav>
+          </ul>
+        </nav>
+      )
     );
   };
 
@@ -117,7 +121,7 @@ const Posts = () => {
             <tr key={post.id}>
               <th scope="row">{post.id}</th>
               <td>{post.title}</td>
-              <td>{post.owner?.name || "Inconnu"}</td>
+              <td>{post.author?.name || "Inconnu"}</td>
               <td>
                 <Link
                   to={`/posts/${post.id}`}
