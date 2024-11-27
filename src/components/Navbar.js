@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { isAuthenticated, logout } from "../services/AuthService";
 
 const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+
+  const toggleNavbar = () => {
+    setIsOpen(!isOpen);
+  };
 
   const handleLogout = () => {
     logout();
@@ -18,22 +23,35 @@ const Navbar = () => {
         </Link>
         <button
           className="navbar-toggler"
+          onClick={toggleNavbar}
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded={isOpen ? "true" : "false"}
+          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <Link className="nav-link" to="/profile">
-                Profile
-              </Link>
-            </li>
+        <div
+          className={`collapse navbar-collapse ${isOpen ? "show" : ""}`}
+          id="navbarNav"
+        >
+          <ul className="navbar-nav ms-auto">
+            {isAuthenticated() && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/profile">
+                  Profile
+                </Link>
+              </li>
+            )}
             {isAuthenticated() ? (
               <li className="nav-item">
-                <button className="nav-link" onClick={handleLogout}>
+                <button
+                  className="btn btn-link nav-link"
+                  type="button"
+                  onClick={handleLogout}
+                >
                   Déconnexion
                 </button>
               </li>

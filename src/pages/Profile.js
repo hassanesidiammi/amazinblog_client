@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../config";
 import { fetchWithAuth } from "../services/AuthInterceptor";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -81,7 +82,7 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <div>Chargement...</div>;
+    return <LoadingSpinner />;
   }
 
   return (

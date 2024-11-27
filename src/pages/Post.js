@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { fetchWithAuth } from "../services/AuthInterceptor";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Post = (props) => {
   const { id } = useParams();
@@ -73,7 +74,7 @@ const Post = (props) => {
   };
 
   if (loading) {
-    return <div>Chargement...</div>;
+    return <LoadingSpinner />;
   }
 
   if (error) {

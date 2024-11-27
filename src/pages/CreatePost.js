@@ -69,14 +69,14 @@ const CreatePost = () => {
           <label htmlFor="content" className="form-label">
             Contenu
           </label>
-          <input
-            type="text"
+          <textarea
             className="form-control"
             id="content"
+            name="content"
+            rows="4"
             value={content}
-            onChange={(e) => setContent(e.target.value)} // Correction du nom de la fonction de mise à jour
-            required
-          />
+            onChange={(e) => setContent(e.target.value)}
+          ></textarea>
         </div>
         <button type="submit" className="btn btn-primary">
           Créer le post
